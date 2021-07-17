@@ -26,8 +26,8 @@
            
            ```
             CRUD	        HTTP METHOD	    URI
-            user들을 표시	    GET	        /users
-            user 하나만 표시	   GET	       /users/:id
+            user들을 표시	   GET	        /users
+            user 하나만 표시	  GET	       /users/:id
             user를 생성	    POST	     /users
             user를 수정	    PUT	         /users:id
             user를 삭제	    DELETE	     /users:id
