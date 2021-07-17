@@ -52,6 +52,7 @@
 1. Container
     1. Docker, Kubenetes, Jenkins 를 이용한 단계별 배포 과정 설명
     2. Kubernetes Ingress (Load Balancer)
+        * Ingress 
     ![image](https://user-images.githubusercontent.com/66579939/126025444-73f1119a-b7e0-4133-a929-6ad740fd6e62.png)
         - 참조 : https://kubernetes.io/ko/docs/concepts/services-networking/ingress/
         - 서비스가 아닌 컨트롤러(ingress-controller)가 직접 외부 통신을 수행
