@@ -4,23 +4,24 @@
     2. BFF
     3. CI/CD
     4. 헥사고널 아키텍처
-    5. Restful API 설계 원칙
+        * 헥사고널 아키텍처 그림
+    6. Restful API 설계 원칙
     ```
     server
     ```
  1. Microservice 기반 (Base, Backing) 서비스 활용
     1. 기반 및 Backing 서비스 : Spring Cloud 활용 (Resilience4J) 
     2. Polyglot 관점에서 Spring Cloud 사용 방법
- 4. BIZ Microservice 식별
+ 1. BIZ Microservice 식별
     1. Bounded Context/Context Map
     2. 도메인 주도 설계
     3. 도메인 모델 패턴 / 데이터 모델 패턴의 차이점
- 6. BiZ Microservice 상세 설계
+ 1. BiZ Microservice 상세 설계
     1. 레이어 역할에 맞는 비즈 설계 : API 설계, 데이터 모델링, 객체 모델링
- 8. 서비스 API 설계
+ 1. 서비스 API 설계
     1. Restful API
     2. 마이크로 서비스가 적합한 환경의 특징
- 10. Data Considency (데이터 일관성) 전략 수립
+ 1. Data Considency (데이터 일관성) 전략 수립
     1. DB 분할 방법 : 비동기 이벤트 기반 SAGA 패턴
     2. CQRS 패턴
 
