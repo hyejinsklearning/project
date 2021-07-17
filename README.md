@@ -3,8 +3,9 @@
     1. Microservice 구성내용
     1. BFF
         1. 참조 : http://34.117.35.195/operation/architecture/architecture-one/
-        2. API Gateway + BFF 패턴
-   ![image](https://user-images.githubusercontent.com/66579939/126030374-fbd729bd-7f7a-40b5-ba01-883b304898e3.png)
+        2. API Gateway + BFF 패턴 
+        3. 
+        ![image](https://user-images.githubusercontent.com/66579939/126030374-fbd729bd-7f7a-40b5-ba01-883b304898e3.png)
         - API Gateway를 나누어서 클라이언트 앱당 하나씩 분할 : 단일 API Gateway가 어플리케이션의 모든 내부 마이크로서비스를 호출 하는 경우, API Gateway는 거대해지게 되고, 모놀리틱 아키텍처에서 발생했던 문제점이 또 다시 발생 가능성 존재
     1. CI/CD
     - CI(Continuous Integration) : 여러 개발자들의 코드를 계속해서 통합하는 것
