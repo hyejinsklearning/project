@@ -1,5 +1,5 @@
 ## Cloud App. 설계    
-1. Microservice Outer/Inner Architecture 수립
+### Microservice Outer/Inner Architecture 수립
     1. Microservice 구성내용
     1. BFF
         1. 참조 : http://34.117.35.195/operation/architecture/architecture-one/
