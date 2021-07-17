@@ -1,9 +1,9 @@
-## Cloud App. 설계    
-### Microservice Outer/Inner Architecture 수립
+# Cloud App. 설계    
+1. Microservice Outer/Inner Architecture 수립
     1. Microservice 구성내용
     1. BFF
         1. 참조 : http://34.117.35.195/operation/architecture/architecture-one/
-        2. API Gateway + BFF 패턴
+        2. API Gateway + BFF 패
         - BFF
         ![image](https://user-images.githubusercontent.com/66579939/126030374-fbd729bd-7f7a-40b5-ba01-883b304898e3.png)
         - API Gateway를 나누어서 클라이언트 앱당 하나씩 분할 : 단일 API Gateway가 어플리케이션의 모든 내부 마이크로서비스를 호출 하는 경우, API Gateway는 거대해지게 되고, 모놀리틱 아키텍처에서 발생했던 문제점이 또 다시 발생 가능성 존재
@@ -21,6 +21,14 @@
         - Outbound Adapter : 비즈니스 로직에 의해 호출되어 외부와 연계 (DAO, 이벤트 메시지 발행 클래스)
         * 헥사고널 아키텍처 그림
      ![image](https://user-images.githubusercontent.com/66579939/126024705-9a1d3025-937a-4809-b706-4a1b3bfb8d71.png)
+    1. 레이어드 아키텍처
+        - Spring 에서 일반적으로 사용되는 아키텍처
+        - 도메인 Logic 에 집중
+        ```
+        [Presentaion Layer] 컨트롤러
+        [Business Logic Layer] 서비스 - 도메인
+        [Data Access Layer] DAO
+        ```
     1. Restful API 설계 원칙
         1. REST : Representational State Transfe라는 용어의 약자이다. 자원을 URI로 표시하고 해당 자원의 상태를 주고 받는 것을 의미한다.
         2. REST API 설계 규칙
@@ -29,14 +37,14 @@
             - 자원에 대한 행위는 HTTP METHOD 로 표현
             - 슬래시 (/) 는 계층 관계를 나타내는데 사용 
            
-            ```
-            CRUD	    HTTP METHOD	URI
-            user들을 표시	GET	/users
-            user 하나만 표시	GET	/users/:id
-            user를 생성	POST	/users
-            user를 수정	PUT	/users:id
-            user를 삭제	DELETE	/users:id
-            ```
+        ```
+        CRUD	    HTTP METHOD	URI
+        user들을 표시	GET	/users
+        user 하나만 표시	GET	/users/:id
+        user를 생성	POST	/users
+        user를 수정	PUT	/users:id
+        user를 삭제	DELETE	/users:id
+        ```
  1. Microservice 기반 (Base, Backing) 서비스 활용
     1. 기반 및 Backing 서비스 : Spring Cloud 활용 (Resilience4J) 
     2. Polyglot 관점에서 Spring Cloud 사용 방법
@@ -95,7 +103,7 @@
             }
             ```
 
-## Cloud App. 구현    
+# Cloud App. 구현    
 1. 환경 설정
     1. Maven 개발 환경 설정
         - 참조1 : https://m.blog.naver.com/dktmrorl/222131777444
@@ -201,16 +209,24 @@
     2. 기반 서비스 연계 (Spring Cloud Connector)
     3. 저장소 처리 구현
     
-## Cloud App. 운영
+# Cloud App. 운영
 1. Auto-Scaler Policy
     1. 오토스케일링 정책과 임계치 내용
     ```
     hpa
     ```
-1. 블루-그린 배포, CI/CD
-    1. Jenkins : Java Runtime 위에서 동작하는 자동화 서버
+1. CI/CD 적용
+    1. Harbor (Image Registry)
+    - 오픈소스 컨테이너 이미지 레지스트리
+    - 역할 기반 접근 제어, 이미지 취약점 스캐닝, 이미지 서명 등의 기능
+    2. Jenkins 설정
+    - 빌드/배포 실행에 필요한 권한 설정, Kubernetes를 위한 Pipeline 작성
+    - ZCP 사용자그룹(namespace), 권한이 적용됨
+    
+1. Jenkins : Java Runtime 위에서 동작하는 자동화 서버
     - 다양한 플러그인을 종합하여 CI/CD Pipeline 을 만들어서 자동화 작업을 가능케함
-    1. Jenkins 파이프라인 내용
+    1. Jenkins 파이프라인
+    - Git Checkout, Source Build, Docker Image Build, Deploy
     ![cicd](https://user-images.githubusercontent.com/66579939/126031109-f6ced7db-068b-4bbb-95c8-1aa4a319ef7d.png)
     ```
         timestamps {
