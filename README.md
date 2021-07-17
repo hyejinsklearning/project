@@ -4,6 +4,7 @@
     2. BFF
     3. CI/CD
     4. 헥사고널 아키텍처
+        Port and Adapters Architecture 라고도 한다.
         * 헥사고널 아키텍처 그림
     6. Restful API 설계 원칙
     ```
