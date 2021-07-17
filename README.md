@@ -224,7 +224,7 @@
         - ZCP 사용자그룹(namespace), 권한이 적용됨
     
 1. Jenkins : Java Runtime 위에서 동작하는 자동화 서버
-    - 다양한 플러그인을 종합하여 CI/CD Pipeline 을 만들어서 자동화 작업을 가능케함
+    - 다양한 플러그인을 종합하여 CI/CD Pipeline 을 만들어서 자동화 작업을 가능하게 함
     1. Jenkins 파이프라인
         - Git Checkout, Source Build, Docker Image Build, Deploy
     ![cicd](https://user-images.githubusercontent.com/66579939/126031109-f6ced7db-068b-4bbb-95c8-1aa4a319ef7d.png)
@@ -302,8 +302,45 @@
         }
     }
     ```  
-    1. 블루그린 배포
-    1. Canary 배포 패턴
+    1. Kustomize (참고 : https://www.jacobbaek.com/1172)
+        - Kubernetes resource 설정을 customizing 할 수 있는 도구  
+        - kubectl 1.14 부터 포함되어 사용이 가능함
+        - kustomization.yaml 파일을 사용하여 불러올 yaml 지정, 기존 Application 배포에 사용하는 yaml 파일 그대로 사용할 수 있게 해준다.
+        - stage (production, staging, dev) 기반 데이터를 별도 관리 가능
+        - 기본구조
+        ```
+        -base // 기본 yaml file 들이 저장되는 경로
+            -deployment.yaml
+            -kustomization.yaml
+            -service.yaml
+        -overlays // stage 별로 나누거나 공용으로 사용되는 base 에 특정 value 추가 시 사용
+            -production
+                -deployment.yaml
+                -kustomization.yaml
+            -staging
+                -config.env
+                -deployment.yaml
+                -kustomization.yaml
+        ```
+    1. Secret
+    2. ConfigMap
+    - kustomization.yaml 에서 ConfigmapGenerator 사용
+    ```
+    configMapGenerator:
+      - name: app-config
+        behavior: merge
+        files:
+          - ../resource/application-common.yaml
+    ```
+    - application-common.yaml (maria db 주소를 configmap 으로 관리)
+    ![image](https://user-images.githubusercontent.com/66579939/126035960-1e9194ba-2c2b-47d8-b807-c7a31629c33c.png)
+    - backend-cred-patch.yaml 에서 configmap 참조 (configmap 위치는 kustomization.yaml 에 추가)
+    ![image](https://user-images.githubusercontent.com/66579939/126035987-051c4912-cced-4f8e-88a9-d7e2301bcbbc.png)
+    - /resources/configMap.yaml
+    ![image](https://user-images.githubusercontent.com/66579939/126035997-654f8d6f-215d-47ad-a6b4-710ffc73cf3f.png)
+
+    4. 블루그린 배포
+    5. Canary 배포 패턴
 1. 모니터링
     1. Prometheus OSS 활용?
     2. 인스턴스 리소스 상태 확인
