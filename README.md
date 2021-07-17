@@ -322,16 +322,37 @@
                 -deployment.yaml
                 -kustomization.yaml
         ```
-    1. Secret
-    2. ConfigMap
-    - kustomization.yaml 에서 ConfigmapGenerator 사용
-    ```
-    configMapGenerator:
-      - name: app-config
-        behavior: merge
-        files:
-          - ../resource/application-common.yaml
-    ```
+    1. Secret, ConfigMap
+    - 참조 : https://kubernetes.io/ko/docs/tasks/manage-kubernetes-objects/kustomization/
+    - ConfigMap : kustomization.yaml 에서 ConfigmapGenerator 사용
+        ```
+        apiVersion: kustomize.config.k8s.io/v1beta1
+        kind: Kustomization
+        resources:
+          - ../../../../base/deployment
+          - ../resource/role.yaml # SA for dev environment
+          - ../resource/sa.yaml
+          - ../resource/secret.yaml
+          - ../resource/configmap.yaml
+        commonLabels:
+          cluster-tier: dev
+        configMapGenerator:
+          - name: app-config
+            behavior: merge
+            files:
+              - ../resource/application-common.yaml
+        patches:
+          - path: ../resource/backend-cred-patch.yaml
+            target:
+              group: apps
+              version: v1
+              name: app
+          - path: ../resource/configmap-reader-patch.yaml
+            target:
+              group: apps
+              version: v1
+              name: app
+        ```
     - application-common.yaml (maria db 주소를 configmap 으로 관리)
     ![image](https://user-images.githubusercontent.com/66579939/126035960-1e9194ba-2c2b-47d8-b807-c7a31629c33c.png)
     - backend-cred-patch.yaml 에서 configmap 참조 (configmap 위치는 kustomization.yaml 에 추가)
@@ -339,10 +360,25 @@
     - /resources/configMap.yaml
     ![image](https://user-images.githubusercontent.com/66579939/126035997-654f8d6f-215d-47ad-a6b4-710ffc73cf3f.png)
 
-    4. 블루그린 배포
-    5. Canary 배포 패턴
+    1. 블루그린 배포
+    1. Canary 배포 패턴
 1. 모니터링
-    1. Prometheus OSS 활용?
-    2. 인스턴스 리소스 상태 확인
-1. 로깅
-    1. Kibana 로그 분석
+    1. Grafana
+    - 데이터 소스로부터 차트, 그래프, 알람 등을 웹 환경에서 제공해주는 interactive visualization web application
+    - Grafana는 오픈소스 시각화 도구로 Prometheus를 지원하고 있으며, 이외에도 Graphite, InfluxDB, OpenTSDB, Elasticsearch, CloudWatch 등과 같은 도구와 연동할 수 있다.
+    - Grafana를 사용하여 대시보드를 구성하기 위해서는 실제 매트릭을 수집하고 있는 데이터베이스가 필요하다.(Elasticsearch 혹은 Prometheus같은 DB)
+    - Microservice Dashboard 를 통해 CPU, Memory, Network 사용량 등 확인 가능
+    1. Prometheus (참조 : https://medium.com/finda-tech/prometheus%EB%9E%80-cf52c9a8785f)
+    - 오픈소스 시스템 모니터링 및 경고 툴킷 (시각화 도구로 Grafana 사용)
+1. 로깅 (참조 : https://velog.io/@hanblueblue/Elastic-Search-1)
+    1. ElasticSearch
+    - 루씬(Apache Lucene) 기반의 Full Text로 검색이 가능한 오픈소스 분석엔진. 주로 REST API를 이용해 처리한다. 대량의 데이터를 신속하게 (거의 실시간으로) 저장, 검색, 분석 할 수 있다.
+    - 모든 데이터를 색인하여 저장하고 검색, 집계 등을 수행
+    2. Logstash
+    - 플러그인을 이용해 데이터 집계와 보관, 서버 데이터 처리를 담당한다. 
+    - 파이프라인으로 데이터를 수집해 필터를 통해 변환 후 Elastic Search로 전송한다.
+    3. Kibana (참조 : https://esbook.kimjmin.net/01-overview/1.1-elastic-stack/1.1.3-kibana)
+    - ES와 연동되어 데이터를 시각화해주는 도구
+        - Discover : ElasticSearch에 색인된 소스 데이터들의 검색을 위한 메뉴
+        - Visualize : aggregation 집계 기능을 통해 조회된 데이터의 통계를 차트로 표현
+        - Dashboard : Visualize 메뉴에서 만들어진 시각화 도구를 조합해서 대시보드 화면을 만든다.
