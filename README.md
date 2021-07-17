@@ -2,8 +2,12 @@
 1. Microservice Outer/Inner Architecture 수립
     1. Microservice 구성내용
     2. BFF
-    3. CI/CD
-    4. 헥사고널 아키텍처
+        1. 참조 : http://34.117.35.195/operation/architecture/architecture-one/
+        2. API Gateway + BFF 패턴
+        *![image](https://user-images.githubusercontent.com/66579939/126030374-fbd729bd-7f7a-40b5-ba01-883b304898e3.png)
+        - API Gateway를 나누어서 클라이언트 앱당 하나씩 분할 : 단일 API Gateway가 어플리케이션의 모든 내부 마이크로서비스를 호출 하는 경우, API Gateway는 거대해지게 되고, 모놀리틱 아키텍처에서 발생했던 문제점이 또 다시 발생 가능성 존재
+    4. CI/CD
+    5. 헥사고널 아키텍처
         - 참조 : https://engineering-skcc.github.io/microservice%20inner%20achitecture/inner-architecture-2/
         - Port and Adapters Architecture 라고도 한다.
         - 내부영역 : 비즈니스 로직 표현, 기술 독립적인 영역이며 외부영역과 연계되는 포트를 가짐
@@ -13,9 +17,22 @@
         * 헥사고널 아키텍처 그림
      ![image](https://user-images.githubusercontent.com/66579939/126024705-9a1d3025-937a-4809-b706-4a1b3bfb8d71.png)
     6. Restful API 설계 원칙
-    ```
-    server
-    ```
+        1. REST : Representational State Transfe라는 용어의 약자이다. 자원을 URI로 표시하고 해당 자원의 상태를 주고 받는 것을 의미한다.
+        2. REST API 설계 규칙
+            - 참조 : https://velog.io/@stampid/REST-API%EC%99%80-RESTful-API
+            - URI 는 정보의 자원을 표현한다. (자원의 이름은 명사 사용, 행위 표현(동사) X)
+            - 자원에 대한 행위는 HTTP METHOD 로 표현
+            - 슬래시 (/) 는 계층 관계를 나타내는데 사용 
+           
+           ```
+            CRUD	        HTTP METHOD	    URI
+            user들을 표시	    GET	        /users
+            user 하나만 표시	   GET	       /users/:id
+            user를 생성	    POST	     /users
+            user를 수정	    PUT	         /users:id
+            user를 삭제	    DELETE	     /users:id
+
+            ```
  1. Microservice 기반 (Base, Backing) 서비스 활용
     1. 기반 및 Backing 서비스 : Spring Cloud 활용 (Resilience4J) 
     2. Polyglot 관점에서 Spring Cloud 사용 방법
