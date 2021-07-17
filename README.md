@@ -4,6 +4,7 @@
     2. BFF
     3. CI/CD
     4. 헥사고널 아키텍처
+        - 참조 : https://engineering-skcc.github.io/microservice%20inner%20achitecture/inner-architecture-2/
         - Port and Adapters Architecture 라고도 한다.
         - 내부영역 : 비즈니스 로직 표현, 기술 독립적인 영역이며 외부영역과 연계되는 포트를 가짐
         - 외부영역 : 인터페이스 처리 담당
