@@ -1,10 +1,10 @@
 ## Cloud App. 설계    
 1. Microservice Outer/Inner Architecture 수립
-    1.Microservice 구성내용
+    1. Microservice 구성내용
     2.BFF
     3.CI/CD
-    4.내부구조 설명 : 헥사고널 아키텍처
-    5.내부구조 설명 : Restful API 설계 원칙
+    4.헥사고널 아키텍처
+    5.Restful API 설계 원칙
     ```
     server
     ```
