@@ -41,7 +41,31 @@
         - DevOps 환경
  1. Data Considency (데이터 일관성) 전략 수립
     1. DB 분할 방법 : 비동기 이벤트 기반 SAGA 패턴
-    2. CQRS 패턴
+    2. CQRS 패턴 (Command and Query Responsibility Segregation)
+        - 참조 : http://34.117.35.195/operation/integration/integration-six/
+        - 명령(Command, DB업데이트) 및 쿼리(Query, DB Read) 의 책임을 분리하는 패턴
+            1. 장점 : 성능, 확장성 보안을 극대화
+            2. CQRS 구현 (이벤트 소싱)
+                - 이벤트 소싱은 이벤트 자체를 DB 처럼 사용하는 방식입니다. CUD 명령은 기존의 DB 에 저장을 한 후, 이벤트를 발생시켜서 쿼리용 데이터를 따로 만드는 방식입니다. CQRS 의 가장 큰 시너지를 낼수 있는 방식이라 최근에는 필수적인 설계 방식이 되었습니다.
+            ```
+            // 개인 회원 신규/변경시 개인회원 Entity를 저장한다    
+            } else if( PersonalMemberChanged.getEventType().equals(PersonalMemberChanged.class.getSimpleName())){
+                PersonalMemberChanged personalMemberChanged = objectMapper.readValue(message, PersonalMemberChanged.class);
+
+                PersonalMember personalMember = new PersonalMember();
+                personalMember.setPersonalId(personalMemberChanged.getId());
+                personalMember.setEmail(personalMemberChanged.getEmail());
+                personalMember.setMemberFavoriteType(personalMemberChanged.getFavoriteType());
+                personalMember.setMemberLevelType(personalMemberChanged.getLevelType());
+                personalMember.setMemberStatusType(personalMemberChanged.getStatusType());
+                personalMember.setMileage(personalMemberChanged.getMileage());
+                personalMember.setMobile(personalMemberChanged.getMobile());
+                personalMember.setName(personalMemberChanged.getName());
+                personalMember.setPoint(personalMemberChanged.getPoint());
+
+                personalMemberRepository.save(personalMember);
+            }
+            ```
 
 ## Cloud App. 구현    
 1. 환경 설정
@@ -123,7 +147,6 @@
           port: 8080
         spring:
           profiles:
-        #   include: common,custom,test
             include: common,custom,test,dev
         ```
         - 서비스별 application.yaml profile 설정
