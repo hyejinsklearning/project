@@ -4,8 +4,13 @@
     2. BFF
     3. CI/CD
     4. 헥사고널 아키텍처
-        Port and Adapters Architecture 라고도 한다.
+        - Port and Adapters Architecture 라고도 한다.
+        - 내부영역 : 비즈니스 로직 표현, 기술 독립적인 영역이며 외부영역과 연계되는 포트를 가짐
+        - 외부영역 : 인터페이스 처리 담당
+        - Inbound Adapter : 외부 요청 처리 (REST API 발행하는 컨트롤러, Spring MVC 컨트롤러, 이벤트 메시지 핸들러)
+        - Outbound Adapter : 비즈니스 로직에 의해 호출되어 외부와 연계 (DAO, 이벤트 메시지 발행 클래스)
         * 헥사고널 아키텍처 그림
+     ![image](https://user-images.githubusercontent.com/66579939/126024705-9a1d3025-937a-4809-b706-4a1b3bfb8d71.png)
     6. Restful API 설계 원칙
     ```
     server
