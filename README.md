@@ -53,31 +53,31 @@
     1. Docker, Kubenetes, Jenkins 를 이용한 단계별 배포 과정 설명
     2. Kubernetes Ingress (Load Balancer)
         * Ingress 
-    ![image](https://user-images.githubusercontent.com/66579939/126025444-73f1119a-b7e0-4133-a929-6ad740fd6e62.png)
+        ![image](https://user-images.githubusercontent.com/66579939/126025444-73f1119a-b7e0-4133-a929-6ad740fd6e62.png)
         - 참조 : https://kubernetes.io/ko/docs/concepts/services-networking/ingress/
         - 서비스가 아닌 컨트롤러(ingress-controller)가 직접 외부 통신을 수행
         - 같은 ip 주소를 외부에 노출
         - 인그레스 : 클러스터 외부 => 내부로 접근하는 요청을 어떻게 처리할 지 정의한 규칙의 모임
         - Ingress는 외부로부터 들어오는 요청에 대한 로드밸런싱, TLS/SSL 인증서 처리, 도메인 기반 가상 호스팅 제공, 특정 HTTP 경로의 라우팅 등의 규칙들을 정의해 둔 자원이며, 이런 규칙들을 실제로 동작하게 해주는건 Ingress-Controller다. 
-    * ingress object (myplay-configuration/configuration/myplay-ingress.yaml)
-    ```
-    apiVersion: extensions/v1beta1
-    kind: Ingress
-    metadata:
-      annotations:
-        kubernetes.io/ingress.class: public-nginx
-      name: myplay-ingress
-      namespace: myplay
-    spec:
-      rules:
-      - host: myplay.factory-dev.cloudzcp.com
-        http:
-          paths:
-          - backend:
-              serviceName: myplay-bff-app-dev
-              servicePort: 8080
-            path: /
-    ```
+        * ingress object (myplay-configuration/configuration/myplay-ingress.yaml)
+        ```
+        apiVersion: extensions/v1beta1
+        kind: Ingress
+        metadata:
+          annotations:
+            kubernetes.io/ingress.class: public-nginx
+          name: myplay-ingress
+          namespace: myplay
+        spec:
+          rules:
+          - host: myplay.factory-dev.cloudzcp.com
+            http:
+              paths:
+              - backend:
+                  serviceName: myplay-bff-app-dev
+                  servicePort: 8080
+                path: /
+        ```
 1. 개발 패턴 (MVC, MVVM 의 차이점)
     1. 참조1 : https://beomy.tistory.com/43
     2. 참조2 : https://velog.io/@addiescode/%EB%94%94%EC%9E%90%EC%9D%B8-%ED%8C%A8%ED%84%B4-MVC-MVVM
