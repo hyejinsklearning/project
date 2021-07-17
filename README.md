@@ -217,16 +217,16 @@
     ```
 1. CI/CD 적용
     1. Harbor (Image Registry)
-    - 오픈소스 컨테이너 이미지 레지스트리
-    - 역할 기반 접근 제어, 이미지 취약점 스캐닝, 이미지 서명 등의 기능
+        - 오픈소스 컨테이너 이미지 레지스트리
+        - 역할 기반 접근 제어, 이미지 취약점 스캐닝, 이미지 서명 등의 기능
     2. Jenkins 설정
-    - 빌드/배포 실행에 필요한 권한 설정, Kubernetes를 위한 Pipeline 작성
-    - ZCP 사용자그룹(namespace), 권한이 적용됨
+        - 빌드/배포 실행에 필요한 권한 설정, Kubernetes를 위한 Pipeline 작성
+        - ZCP 사용자그룹(namespace), 권한이 적용됨
     
 1. Jenkins : Java Runtime 위에서 동작하는 자동화 서버
     - 다양한 플러그인을 종합하여 CI/CD Pipeline 을 만들어서 자동화 작업을 가능케함
     1. Jenkins 파이프라인
-    - Git Checkout, Source Build, Docker Image Build, Deploy
+        - Git Checkout, Source Build, Docker Image Build, Deploy
     ![cicd](https://user-images.githubusercontent.com/66579939/126031109-f6ced7db-068b-4bbb-95c8-1aa4a319ef7d.png)
     ```
         timestamps {
@@ -279,7 +279,7 @@
                         checkout scm
                     }
                 }
-
+                // kustomize 기반 kubenetes 배포 리소스 (deployment, service, configmap) 자동화하여 
                 stage('BUILD K8S YAML') {
                     dir('CONFIG_SRC_WORKSPACE') {
                         container('kustomize') {
