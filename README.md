@@ -112,6 +112,27 @@
         - JPA 사용하면, JPA 내부에서 JDBC API 사용하여 SQL 호출, DB 통신
 4. 환경 이해 (Dev, Staging, Production)
     1. 환경에 따른 설정 정보
+        - 참조 : https://multifrontgarden.tistory.com/277
+        - spring.config.active.on-profile 사용
+    1. Myplayground 환경
+        - 프로젝트 Cloud 환경에서는 dev profile 을 사용한다.
+        - Local 환경에서는 profile 별도 명시하지 않았으므로 default profile 로 
+        - configuration application.yaml 설정
+        ```
+        server:
+          port: 8080
+        spring:
+          profiles:
+        #   include: common,custom,test
+            include: common,custom,test,dev
+        ```
+        - 서비스별 application.yaml profile 설정
+        ```
+        spring:
+          config:
+            activate:
+              on-profile: dev
+        ```
 5. Cloud App Back-End 구현
     1. Spring Boot 비즈 로직 개발
     2. 기반 서비스 연계 (Spring Cloud Connector)
