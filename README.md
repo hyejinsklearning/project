@@ -58,7 +58,14 @@
         - DevOps 환경
  1. Data Considency (데이터 일관성) 전략 수립
     1. DB 분할 방법 : 비동기 이벤트 기반 SAGA 패턴
-    2. CQRS 패턴 (Command and Query Responsibility Segregation)
+    - SAGA 패턴 : 마이크로서비스의 독립적인 분산 트랜잭션 처리를 지원하는 패턴
+    - 각 서비스의 로컬 트랜잭션을 순차적으로 처리하는 패턴
+    - 여러 개의 서비스를 1개의 트랜잭션으로 묶지 않고 각 로컬 트랜잭션과 보상 트랜잭션을 이용해 비즈니스/데이터의 정합성을 맞춘다.
+    - 결과적 일관성(eventual consistency) : 데이터 일관성이 실시간을 아니더라도 일정 시점이 됐을 때 일관성 만족
+    - SAGA 패턴 + 이벤트 메시지 기반 비동기 통신 적용
+        - 마이크로서비스 트랜잭션은 독립적
+        - 각 트랜잭션 성공 시 상태 변경 이벤트 발행해 이 이벤트를 구독하는 다른 서비스의 로컬 
+    3. CQRS 패턴 (Command and Query Responsibility Segregation)
         - 참조 : http://34.117.35.195/operation/integration/integration-six/
         - 명령(Command, DB업데이트) 및 쿼리(Query, DB Read) 의 책임을 분리하는 패턴
             1. 장점 : 성능, 확장성 보안을 극대화
@@ -87,8 +94,20 @@
 ## Cloud App. 구현    
 1. 환경 설정
     1. Maven 개발 환경 설정
+        - 참조1 : https://m.blog.naver.com/dktmrorl/222131777444
+        - 참조2 : https://goddaehee.tistory.com/199
     ```
-    Maven 라이브러리, 빌드 등
+    Maven 프로젝트 구조
+    - pom.xml
+    - src
+        - main
+            - java
+                - com.ss501.service
+            - resources
+        - test
+            - java
+                - com.ss501.service
+            - resources
     ```
 1. Container
     1. Docker, Kubenetes, Jenkins 를 이용한 단계별 배포 과정 설명
