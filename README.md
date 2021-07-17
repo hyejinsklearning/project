@@ -24,14 +24,13 @@
             - 자원에 대한 행위는 HTTP METHOD 로 표현
             - 슬래시 (/) 는 계층 관계를 나타내는데 사용 
            
-           ```
-            CRUD	        HTTP METHOD	    URI
-            user들을 표시	   GET	        /users
-            user 하나만 표시	  GET	       /users/:id
-            user를 생성	    POST	     /users
-            user를 수정	    PUT	         /users:id
-            user를 삭제	    DELETE	     /users:id
-
+            ```
+            CRUD	HTTP METHOD	URI
+            user들을 표시	GET	/users
+            user 하나만 표시	GET	/users/:id
+            user를 생성	POST	/users
+            user를 수정	PUT	/users:id
+            user를 삭제	DELETE	/users:id
             ```
  1. Microservice 기반 (Base, Backing) 서비스 활용
     1. 기반 및 Backing 서비스 : Spring Cloud 활용 (Resilience4J) 
