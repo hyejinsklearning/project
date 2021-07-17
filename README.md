@@ -46,11 +46,33 @@
         ```
  1. Microservice 기반 (Base, Backing) 서비스 활용
     1. 기반 및 Backing 서비스 : Spring Cloud 활용
-        # Spring Cloud Config : 어플리케이션 동작 시 개발, 운영 환경 등 설정 파일을 선택할 수 있도록 처리
-        - Spring Cloud Zookeeper(Apache Zookeeper)
+        - Spring Cloud Config : 어플리케이션 동작 시 개발, 운영 환경 등 설정 파일을 선택할 수 있도록 처리
         - 서킷 브레이커(Circuit Breaker)
-            장애 발생한 인스턴스로 가는 요청을 '중단' 시킴으로써 장애 발생 회피
-        - Resilience4J
+            - 장애 발생한 인스턴스로 가는 요청을 '중단' 시킴으로써 장애 발생 회피
+        - Resilience4J (참조 : https://happycloud-lee.tistory.com/219)
+            - 요청 마이크로서비스와 제공 마이크로서비스사이에 Resilience4J를 통해 통신하는것이 핵심 원리
+            - 모든 traffic이 Resilience4J를 통하므로, Circuit breaker, 격벽, 유량제어같은것이 가능
+        - Spring Cloud Stream
+            - Apache Kafka 등의 제품과 연계하여 분산 메시징 지원 (MQ 이용)
+            - Rabbit MQ, Apache Kafka, Google Pubsub 등의 제품이 있음.
+            - Zookeeper : 분산 애플리케이션의 데이터 관리 용도 (Kafka 아키텍처에서는 메시지 큐 데이터 관리)
+            - Kafka : 메시지를 TCP로 전송하기 위한 브로커를 제공하는 메시지 브로커 
+            - Topic : Kafka 에서 메시지를 주고 받기 위해 사용되는 Key.
+            - 참조 : https://waspro.tistory.com/645
+            ```
+            Apache Kafka는 아파치 소프트웨어 재단이 스칼라로 개발한 오픈 소스 메시지 브로커 프로젝트로 pub/sub 모델의 메시지 큐를 지원한다.
+
+            마이크로서비스 아키텍처에서 메시지 브로커는 Message Backing Service로써 동작하며, 
+            메시지의 처리를 통해 비동기 애플리케이션, DB 동기화, 보상트랜잭션 구현, PUB/SUB 구현 등 
+            다양한 형태의 애플리케이션으로 응용될 수 있다.
+
+            Kafka는 대표적인 메시지 브로커로써, RabbitMQ와 많이 비교된다.
+
+            일반적으로 RabbitMQ는 대표적인 신뢰성 높은 메시지 브로커로써 각광받는다. 
+            장애 발생 시에도 데이터 복원이 쉽고, 반드시 한번의 전송을 보장한다. 다만 성능면에서 Kafka 보다 떨어진다.
+
+            Kafka는 대용량 실시간 처리에 특화되어 있다. 특히 대량의 Batch Job을 일괄 처리하는데 적합하다.
+            ```
     3. Polyglot 관점에서 Spring Cloud 사용 방법
  1. BIZ Microservice 식별
     1. Bounded Context/Context Map
