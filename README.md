@@ -1,14 +1,18 @@
 ## Cloud App. 설계    
 1. Microservice Outer/Inner Architecture 수립
     1. Microservice 구성내용
-    2. BFF
+    1. BFF
         1. 참조 : http://34.117.35.195/operation/architecture/architecture-one/
         2. API Gateway + BFF 패턴
         - BFF
         ![image](https://user-images.githubusercontent.com/66579939/126030374-fbd729bd-7f7a-40b5-ba01-883b304898e3.png)
         - API Gateway를 나누어서 클라이언트 앱당 하나씩 분할 : 단일 API Gateway가 어플리케이션의 모든 내부 마이크로서비스를 호출 하는 경우, API Gateway는 거대해지게 되고, 모놀리틱 아키텍처에서 발생했던 문제점이 또 다시 발생 가능성 존재
-    4. CI/CD
-    5. 헥사고널 아키텍처
+    1. CI/CD
+    - CI(Continuous Integration) : 여러 개발자들의 코드를 계속해서 통합하는 것
+    - CD(Continuous Delivery) : 개발자들이 코드를 작성하면 사용자들이 사용할 수 있도록 만드는 것
+    - ==> 지속적으로 배포 가능한 상태 유지
+    - 참조 : http://34.117.35.195/operation/deployment/deployment-one/
+    1. 헥사고널 아키텍처
         - 참조 : https://engineering-skcc.github.io/microservice%20inner%20achitecture/inner-architecture-2/
         - Port and Adapters Architecture 라고도 한다.
         - 내부영역 : 비즈니스 로직 표현, 기술 독립적인 영역이며 외부영역과 연계되는 포트를 가짐
@@ -17,7 +21,7 @@
         - Outbound Adapter : 비즈니스 로직에 의해 호출되어 외부와 연계 (DAO, 이벤트 메시지 발행 클래스)
         * 헥사고널 아키텍처 그림
      ![image](https://user-images.githubusercontent.com/66579939/126024705-9a1d3025-937a-4809-b706-4a1b3bfb8d71.png)
-    6. Restful API 설계 원칙
+    1. Restful API 설계 원칙
         1. REST : Representational State Transfe라는 용어의 약자이다. 자원을 URI로 표시하고 해당 자원의 상태를 주고 받는 것을 의미한다.
         2. REST API 설계 규칙
             - 참조 : https://velog.io/@stampid/REST-API%EC%99%80-RESTful-API
@@ -204,12 +208,86 @@
     hpa
     ```
 1. 블루-그린 배포, CI/CD
+    1. Jenkins : Java Runtime 위에서 동작하는 자동화 서버
+    - 다양한 플러그인을 종합하여 CI/CD Pipeline 을 만들어서 자동화 작업을 가능케함
     1. Jenkins 파이프라인 내용
+    ![cicd](https://user-images.githubusercontent.com/66579939/126031109-f6ced7db-068b-4bbb-95c8-1aa4a319ef7d.png)
     ```
-    kubectl describe pod [pod 명]   
+        timestamps {
+        podTemplate(label:label,
+            serviceAccount: "zcp-system-sa-${ZCP_USERID}",
+            containers: [
+                containerTemplate(name: 'maven', image: 'maven:3.6.3-jdk-11-slim', ttyEnabled: true, command: 'cat'),
+                containerTemplate(name: 'docker', image: 'docker:17-dind', ttyEnabled: true, command: 'dockerd-entrypoint.sh', privileged: true),
+                containerTemplate(name: 'tools', image: 'argoproj/argo-cd-ci-builder:v1.0.0', command: 'cat', ttyEnabled: true),
+                containerTemplate(name: 'kubectl', image: 'lachlanevenson/k8s-kubectl:v1.18.2', ttyEnabled: true, command: 'cat'),
+                containerTemplate(name: 'kustomize', image: 'gauravgaglani/k8s-kustomize:1.1.0', ttyEnabled: true, command: 'cat')
+            ],
+            volumes: [
+                persistentVolumeClaim(mountPath: '/root/.m2', claimName: 'zcp-jenkins-mvn-repo')
+            ]) {
+
+            node(label) {
+                stage('SOURCE CHECKOUT') {
+                    dir('APP_SRC_WORKSPACE') {
+                        checkout scm: [ \
+                            $class : 'GitSCM', branches: [[name: '*/master']], \
+                            submoduleCfg: [], \
+                            userRemoteConfigs: [[url: "https://${REPO_URL}", credentialsId: 'GIT_CREDENTIALS',]] \
+                        ]
+                    }
+                }
+
+                stage('BUILD') {
+                    dir('APP_SRC_WORKSPACE') {
+                        container('maven') {
+                            mavenBuild goal: 'clean package -DskipTests=true -f pom.xml', systemProperties:['maven.repo.local':"/root/.m2/${JOB_NAME}"]
+                        }
+                    }
+                }
+
+                stage('BUILD DOCKER IMAGE') {
+                    dir('APP_SRC_WORKSPACE') {
+                        container('docker') {
+                            dockerCmd.withDockerRegistry([credentialsId:'HARBOR_CREDENTIALS', url:"https://${HARBOR_REGISTRY}"]) {
+                                def app = docker.build("${HARBOR_REGISTRY}/${DOCKER_IMAGE}:${DOCKER_VERSION}")
+                                app.push()
+                                app.push("latest")
+                            }
+                        }
+                    }
+                }
+
+                stage('CONFIG CHECKOUT') {
+                    dir('CONFIG_SRC_WORKSPACE') {
+                        checkout scm
+                    }
+                }
+
+                stage('BUILD K8S YAML') {
+                    dir('CONFIG_SRC_WORKSPACE') {
+                        container('kustomize') {
+                            sh "kustomize build --load_restrictor none --enable_kyaml=false ${DEPLOY_PATH} > deploy.yaml"
+                            echo 'Kubernetes 배포 yaml 생성 내역'
+                            sh 'cat deploy.yaml'
+                        }
+                    }
+                }
+
+                stage('DEPLOY') {
+                    dir('CONFIG_SRC_WORKSPACE') {
+                        container('kubectl') {
+                            kubeCmd.apply file: 'deploy.yaml', wait: 300, recoverOnFail: false, namespace: K8S_NAMESPACE
+                            sh "kubectl rollout restart deployment ${DEPLOYMENT} -n ${K8S_NAMESPACE} "
+                        }
+                    }
+                }
+            }
+        }
+    }
     ```  
     1. 블루그린 배포
-    2. Canary 배포 패턴
+    1. Canary 배포 패턴
 1. 모니터링
     1. Prometheus OSS 활용?
     2. 인스턴스 리소스 상태 확인
