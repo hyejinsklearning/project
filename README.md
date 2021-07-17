@@ -46,8 +46,7 @@
         ```
  1. Microservice 기반 (Base, Backing) 서비스 활용
     1. 기반 및 Backing 서비스 : Spring Cloud 활용
-        - Spring Cloud Config
-            어플리케이션 동작 시 개발, 운영 환경 등 설정 파일을 선택할 수 있도록 처리
+        # Spring Cloud Config : 어플리케이션 동작 시 개발, 운영 환경 등 설정 파일을 선택할 수 있도록 처리
         - Spring Cloud Zookeeper(Apache Zookeeper)
         - 서킷 브레이커(Circuit Breaker)
             장애 발생한 인스턴스로 가는 요청을 '중단' 시킴으로써 장애 발생 회피
@@ -190,7 +189,7 @@
 4. 환경 이해 (Dev, Staging, Production)
     1. 환경에 따른 설정 정보
         - 참조 : https://multifrontgarden.tistory.com/277
-        - spring.config.active.on-profile 사용
+        - spring.config.active.on-profile 사용 (Spring Cloud)
     1. Myplayground 환경
         - 프로젝트 Cloud 환경에서는 dev profile 을 사용한다.
         - Local 환경에서는 profile 별도 명시하지 않았으므로 default profile 로 
