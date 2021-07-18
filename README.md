@@ -100,7 +100,18 @@
         - DDD를 서비스에 적용 시킨 것이 Microservice 이다.
         - 각각의 도메인은 분리되고, 서로 API 호출 (높은 응집력, 낮은 결합도) => 변경과 확장에 용이하다.
         - Aggregate : 도메인 영역을 대표하는 객체
-    4. 도메인 모델 패턴 / 데이터 모델 패턴의 차이점
+    3. 도메인 모델 패턴 / 데이터 모델 패턴의 차이점
+        1. 데이터베이스 중심 아키텍처의 문제점
+            - 특정 관계형 데이터베이스에 의존한 데이터 모델링을 수행
+            - 물리 테이블 모델 중심으로 애플리케이션을 구현
+            - 간단한 처리 로직은 편하지만 업무가 복잡해지면 점점 복잡성을 제어할 수 없게 된다.
+            - 업무 규칙이 SQL과 섞여서 표현된다.
+            - 데이터가 늘어남에 따라 데이터베이스의 성능이 지속적으로 떨어져 데이터베이스 서버 사양과 용량 증가 / 튜닝에 몰두하게 된다.
+        1. 도메인 모델 패턴
+            - 도메인 객체가 데이터 뿐만 아니라 비즈니스 행위를 가지고 있다.
+            - 도메인 객체가 소유한 데이터는 도메인 객체가 제공하는 행위에 의해 은닉된다.
+            - 서비스 책임이 도메인으로 적절히 분산되어 서비스가 비대해지지 않고 서비스 메서드가 단순해진다.
+            - But 객체지향 지식에 대한 경험과 역량이 필요하다.
  1. BiZ Microservice 상세 설계
     1. 레이어 역할에 맞는 비즈 설계 : API 설계, 데이터 모델링, 객체 모델링
  1. 서비스 API 설계
@@ -253,10 +264,47 @@
     
 # Cloud App. 운영
 1. Auto-Scaler Policy
-    1. 오토스케일링 정책과 임계치 내용
-    ```
-    hpa
-    ```
+    1. 참조 : https://medium.com/dtevangelist/k8s-kubernetes%EC%9D%98-hpa%EB%A5%BC-%ED%99%9C%EC%9A%A9%ED%95%9C-%EC%98%A4%ED%86%A0%EC%8A%A4%EC%BC%80%EC%9D%BC%EB%A7%81-auto-scaling-2fc6aca61c26
+    1. Auto Scaling
+        - 사용자가 정의한 주기(스케줄링)나 이벤트(모니터링 알람)에 따라 서버를 자동으로 생성하거나 삭제함
+    1. Kubernetes Auto Scaling 메카니즘
+        1. Horizontal Pod Autoscaler (HPA)
+            - 원하는(desired) 메트릭 값과 현재(current) 메트릭 값 사이의 비율로 작동한다.
+            - 원하는 Replica 수
+    1. HPA(HorizontalPodAutoscaler) 설정
+        - 리소스(CPU) 자원 상태에 따라서 10개까지 Scaling 가능하도록 
+        ```
+        apiVersion: autoscaling/v2beta2
+        kind: HorizontalPodAutoscaler
+        metadata:
+          name: app
+        spec:
+          scaleTargetRef:
+            apiVersion: apps/v1
+            kind: Deployment
+            name: app
+          minReplicas: 1
+          maxReplicas: 10
+          behavior:
+            scaleDown:
+              stabilizationWindowSeconds: 60
+              policies:
+              - type: Percent
+                value: 50
+                periodSeconds: 60
+              - type: Pods
+                value: 5
+                periodSeconds: 30
+              selectPolicy: Min
+          metrics:
+            - type: Resource
+              resource:
+                name: cpu
+                target:
+                  type: Utilization
+                  averageUtilization: 20
+        ```
+    
 1. CI/CD 적용
     1. Harbor (Image Registry)
         - 오픈소스 컨테이너 이미지 레지스트리
@@ -401,9 +449,24 @@
     ![image](https://user-images.githubusercontent.com/66579939/126035987-051c4912-cced-4f8e-88a9-d7e2301bcbbc.png)
     - /resources/configMap.yaml
     ![image](https://user-images.githubusercontent.com/66579939/126035997-654f8d6f-215d-47ad-a6b4-710ffc73cf3f.png)
-
+    
+    1. 참조 : http://34.117.35.195/operation/deployment/deployment-three/
     1. 블루그린 배포
-    1. Canary 배포 패턴
+        - 신규버전(blue)을 완전히 배포한 후에 이전버전(green)에서 신규버전(blue)으로 트래픽을 변경하는 방법
+        - 이전버전과 신규버전이 동시에 존재함.
+        1. 장점
+            - 이전버전이 존재하기 때문에 즉시 롤백이 가능하다
+            - 프로덕션 환경에 영향을 주지 않고, 실제 서비스 환경에서 신규 버전 테스트가 가능하다.
+        1. 단점
+            - 자원이 두배로 필요하다.
+    1. Canary 배포
+        - 신규 버전을 일부 사용자에게만 노출하거나 특정 기간에 걸쳐서 서서히 신규 버전을 노출시키는 방법
+        - 최소한의 희생으로 신규 버전의 안정성을 확인 하는 방법
+        1. 장점
+            - 오류 수정 및 모니터링에 유리하다.
+            - 빠른 롤백이 가능하다.
+        2. 단점
+            - 배포 즉 롤아웃에 시간이 걸린다.
 1. 모니터링
     1. Grafana
     - 데이터 소스로부터 차트, 그래프, 알람 등을 웹 환경에서 제공해주는 interactive visualization web application
