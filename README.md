@@ -45,6 +45,10 @@
         user를 삭제	DELETE	/users:id
         ```
  1. Microservice 기반 (Base, Backing) 서비스 활용
+    1. Spring Cloud : Spring Boot + Netflix OSS
+        - 마이크로서비스 구축 시 시스템을 여러 개의 서비스로 구성하여 문제가 발생
+        - 넷플릭스 OSS 는 마이크로 서비스 개발/운영 노하우 오픈소스로 공유
+        - 스프링 부트 프레임워크에서 잘 돌아갈 수 있도록 넷플릭스 OSS 모듈을 스프링 프레임워크로 감싸서 Spring Cloud 로 발표
     1. 기반 및 Backing 서비스 : Spring Cloud 활용
         - Spring Cloud Config : 어플리케이션 동작 시 개발, 운영 환경 등 설정 파일을 선택할 수 있도록 처리
         - 서킷 브레이커(Circuit Breaker)
@@ -73,8 +77,20 @@
 
             Kafka는 대용량 실시간 처리에 특화되어 있다. 특히 대량의 Batch Job을 일괄 처리하는데 적합하다.
             ```
-    3. Polyglot 관점에서 Spring Cloud 사용 방법
- 1. BIZ Microservice 식별
+    1. Polyglot 관점에서 Spring Cloud 사용 방법
+        1. Polyglot : 특정 서비스를 구축하는 데 사용되는 언어나 저장소를 자율적으로 선택할 수 있는 방식
+            - 참조 : https://www.egovframe.go.kr/home/ntt/nttRead.do?menuNo=76&bbsId=171&nttId=1809
+        1. Polyglot Support : Sidecar
+            - Spring Cloud 는 Spring 기반으로 작성된 애플리케이션만 동작이 가능하다.
+            - JVM 이 아닌 애플리케이션을 Spring Cloud 와 엮어서 동작하려면 Spring Cloud Sidecar를 사용한다.
+            - 비 JVM 애플리케이션의 경우 Sidecar 가 동작여부를 체크 후 Eureka 서버에 비 JVM 애플리케이션을 등록해준다.
+            - Sidecar는 주기적으로 상태를 체크하여 Eureka 서버에 알려준다.
+         1. Eureka : Service Registry
+            - Eureka 는 MSA 의 장점 중 하나인 동적인 서비스 증설 및 축소를 위하여 필수적으로 필요한 서비스의 자가 등록, 탐색 및 부하 분산에 사용될 수 있는 라이브러리이다.
+            - 마이크로 서비스들의 정보를 레지스트리 서버에 등록할 수 있도록 기능을 제공한다.
+            - Eureka 서버 : Eureka 클라이언트에 해당하는 마이크로 서비스들의 상태 정보가 등록되어 있는 레지스트리 서버
+            - Eureka 클라이언트 : 서비스가 시작될 때 Eureka 서버에 자신의 정보를 등록하고 이후 주기적으로 자신의 health check 정보를 알리며, 일정 횟수 이상의 ping 이 확인되지 않으면 Eureka 서버에서 해당 서비스를 제외시킨다.
+1. BIZ Microservice 식별
     1. Bounded Context/Context Map
     2. 도메인 주도 설계 (DDD)
         - 참조 : https://huisam.tistory.com/entry/DDD
