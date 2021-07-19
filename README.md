@@ -263,6 +263,36 @@
     3. 저장소 처리 구현
     
 # Cloud App. 운영
+1. Kubenetes 오브젝트 모델
+    ![image](https://user-images.githubusercontent.com/66579939/126106146-90937b1e-f974-4b78-8176-1d8eab62dfa0.png)
+    1. 참조 : http://34.117.35.195/operation/operation/operation-two/
+    2. Kubernetes Object, Controller and Kubectl
+        1. Object : Kubernetes 상태를 나타내틑 엔티티로 Kubernetes API 의 Endpoint
+            - 유형 : Pod, Service, Volume, Namespace
+            - Spec 와 Status 필드를 가짐
+        2. Controller : Object 의 Status 를 갱신하고, Object 를 Spec에 정의된 상태로 지속 변화시키는 주체
+            - 유형 : ReplicaSet, Deployment, StatefulSets, DaemonSet, Cronjob 등
+        3. Kubectl : Command CLI 에서 Object 와 Controller 를 제어하는 Kubernetes Client 
+    - Pod : Kubernetes 최소 배포 단위
+    - ReplicaSets : 지정된 수의 Pod 가 항상 실행되도록 보장하는 Replication Controller 의 업그레이드 버전
+        - 주로 Pod Orchestration 에 사용
+        - Deployment 가 ReplicaSets 를 자동 생성
+    - Deployments : Pods 와 ReplicaSets 에 대한 선언적 업데이트 제공, Master Node 컨트롤 관리자의 일부이다.
+    - Namespace : 동일 물리 클러스터 기반 복수의 가상 클러스터를 지원하는데 이들 가상 클러스터를 Namespace 라고 한다.
+        - 팀이나 프로젝트 단위로 클러스터 파티션을 나눌 수 있다.
+    - Service : Selector 를 사용하여 Pod 를 논리적 그룹으로 나눌 수 있다. (각 논리적 그룹은 Service name 부여)
+        - Service IP 주소로 사용자가 Pod 에 접속함
+1. Liveness Probes & Readienss Probes
+    1. Liveness Probes
+        - Pod는 정상 작동하지만 내부 어플리케이션 반응이 없다면 컨테이너 재시작
+        - Pod 상태를 체크하다가 비정상인 경우 Kubelet 을 통해서 재시작 
+    1. Readiness Probes
+        - 일시적으로 서비스가 불가능한 상태인 경우 서비스 목록에서 제외
+    - Liveness probe와 Readiness probe 차이점은 
+        - Liveness probe는 컨테이너의 상태가 비정상이라고 판단하면, 해당 Pod를 재시작하는데 반해,
+        - Readiness probe는 컨테이너가 비정상일 경우에는 해당 Pod를 사용할 수 없음으로 표시하고, 서비스등에서 제외합니다.
+    - 주기적으로 체크하여, 정상일 경우 정상 서비스에 포함합니다.
+    1. kubelet : 클러스터의 모든 머신에서 실행되며 Pod 및 컨테이너 시작 등의 작업을 수행하는 구성 요소이다.
 1. Auto-Scaler Policy
     1. 참조 : https://medium.com/dtevangelist/k8s-kubernetes%EC%9D%98-hpa%EB%A5%BC-%ED%99%9C%EC%9A%A9%ED%95%9C-%EC%98%A4%ED%86%A0%EC%8A%A4%EC%BC%80%EC%9D%BC%EB%A7%81-auto-scaling-2fc6aca61c26
     1. Auto Scaling
@@ -413,8 +443,8 @@
                 -kustomization.yaml
         ```
     1. Secret, ConfigMap
-    - 참조 : https://kubernetes.io/ko/docs/tasks/manage-kubernetes-objects/kustomization/
-    - ConfigMap : kustomization.yaml 에서 ConfigmapGenerator 사용
+        - 참조 : https://kubernetes.io/ko/docs/tasks/manage-kubernetes-objects/kustomization/
+        - ConfigMap : kustomization.yaml 에서 ConfigmapGenerator 사용
         ```
         apiVersion: kustomize.config.k8s.io/v1beta1
         kind: Kustomization
@@ -469,21 +499,21 @@
             - 배포 즉 롤아웃에 시간이 걸린다.
 1. 모니터링
     1. Grafana
-    - 데이터 소스로부터 차트, 그래프, 알람 등을 웹 환경에서 제공해주는 interactive visualization web application
-    - Grafana는 오픈소스 시각화 도구로 Prometheus를 지원하고 있으며, 이외에도 Graphite, InfluxDB, OpenTSDB, Elasticsearch, CloudWatch 등과 같은 도구와 연동할 수 있다.
-    - Grafana를 사용하여 대시보드를 구성하기 위해서는 실제 매트릭을 수집하고 있는 데이터베이스가 필요하다.(Elasticsearch 혹은 Prometheus같은 DB)
-    - Microservice Dashboard 를 통해 CPU, Memory, Network 사용량 등 확인 가능
+        - 데이터 소스로부터 차트, 그래프, 알람 등을 웹 환경에서 제공해주는 interactive visualization web application
+        - Grafana는 오픈소스 시각화 도구로 Prometheus를 지원하고 있으며, 이외에도 Graphite, InfluxDB, OpenTSDB, Elasticsearch, CloudWatch 등과 같은 도구와 연동할 수 있다.
+        - Grafana를 사용하여 대시보드를 구성하기 위해서는 실제 매트릭을 수집하고 있는 데이터베이스가 필요하다.(Elasticsearch 혹은 Prometheus같은 DB)
+        - Microservice Dashboard 를 통해 CPU, Memory, Network 사용량 등 확인 가능
     1. Prometheus (참조 : https://medium.com/finda-tech/prometheus%EB%9E%80-cf52c9a8785f)
-    - 오픈소스 시스템 모니터링 및 경고 툴킷 (시각화 도구로 Grafana 사용)
+        - 오픈소스 시스템 모니터링 및 경고 툴킷 (시각화 도구로 Grafana 사용)
 1. 로깅 (참조 : https://velog.io/@hanblueblue/Elastic-Search-1)
     1. ElasticSearch
-    - 루씬(Apache Lucene) 기반의 Full Text로 검색이 가능한 오픈소스 분석엔진. 주로 REST API를 이용해 처리한다. 대량의 데이터를 신속하게 (거의 실시간으로) 저장, 검색, 분석 할 수 있다.
-    - 모든 데이터를 색인하여 저장하고 검색, 집계 등을 수행
+        - 루씬(Apache Lucene) 기반의 Full Text로 검색이 가능한 오픈소스 분석엔진. 주로 REST API를 이용해 처리한다. 대량의 데이터를 신속하게 (거의 실시간으로) 저장, 검색, 분석 할 수 있다.
+        - 모든 데이터를 색인하여 저장하고 검색, 집계 등을 수행
     2. Logstash
-    - 플러그인을 이용해 데이터 집계와 보관, 서버 데이터 처리를 담당한다. 
-    - 파이프라인으로 데이터를 수집해 필터를 통해 변환 후 Elastic Search로 전송한다.
+        - 플러그인을 이용해 데이터 집계와 보관, 서버 데이터 처리를 담당한다. 
+        - 파이프라인으로 데이터를 수집해 필터를 통해 변환 후 Elastic Search로 전송한다.
     3. Kibana (참조 : https://esbook.kimjmin.net/01-overview/1.1-elastic-stack/1.1.3-kibana)
-    - ES와 연동되어 데이터를 시각화해주는 도구
+        - ES와 연동되어 데이터를 시각화해주는 도구
         - Discover : ElasticSearch에 색인된 소스 데이터들의 검색을 위한 메뉴
         - Visualize : aggregation 집계 기능을 통해 조회된 데이터의 통계를 차트로 표현
         - Dashboard : Visualize 메뉴에서 만들어진 시각화 도구를 조합해서 대시보드 화면을 만든다.
