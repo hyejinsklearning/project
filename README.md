@@ -77,6 +77,17 @@
 
             Kafka는 대용량 실시간 처리에 특화되어 있다. 특히 대량의 Batch Job을 일괄 처리하는데 적합하다.
             ```
+    1. Kafka, RabbitMQ (참조 : https://armful-log.tistory.com/61)
+        1. Kafka
+            - Apache Kafka(아파치 카프카)는 LinkedIn에서 개발된 분산 메시징 시스템으로 2011년에 오픈소스로 공개되었다.
+            - 대용량의 실시간 로그처리에 특화된 아키텍쳐 설계를 통하여 기존 메시징 시스템보다 우수한 TPS를 보여주고 있다.
+            - 메시지는 topic으로 분류되고, topic은 여러개의 partition으로 나뉘어진다.
+            - zookeeper는 분산 메세지 큐의 정보를 관리하는 역할 (반드시 필요)
+            - producer 중심적, 많은 양의 데이터를 파티셔닝하는데에 기반을 둔다
+        1. RabbitMQ
+            - RabbitMQ는 AMQP 프로토콜을 구현한 메세지 브로커이다. 쉽게 말해, 시스템 간에 메세지를 전달해주는 서비스이다.
+            - broker 중심적, producer/consumer간의 보장되는 메세지 전달에 초점
+            - 데이터 처리보단 관리적 측면이나 다양한 기능 구현을 위한 서비스를 구축할 때 사용
     1. Polyglot 관점에서 Spring Cloud 사용 방법
         1. Polyglot : 특정 서비스를 구축하는 데 사용되는 언어나 저장소를 자율적으로 선택할 수 있는 방식
             - 참조 : https://www.egovframe.go.kr/home/ntt/nttRead.do?menuNo=76&bbsId=171&nttId=1809
