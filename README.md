@@ -14,10 +14,16 @@
     1. 헥사고널 아키텍처
         - 참조 : https://engineering-skcc.github.io/microservice%20inner%20achitecture/inner-architecture-2/
         - Port and Adapters Architecture 라고도 한다.
+        - 애플리케이션과 그 외 인터페이스를 자유롭게 탈착 가능하게 하는 컨셉
+        - 애플리케이션을 중심으로 애플리케이션 외의 모듈은 어댑터와 포트를 맞추면 언제든 바꿀 수 있음.
+        - 프라이머리 포트 : 애플리케이션에서는 외부 모듈이 사용할 수 있는 인터페이스를 제공
+        - 프라이머리 어댑터 : 계층 사이 객체가 포트를 사용해 두 계층을 연결
         - 내부영역 : 비즈니스 로직 표현, 기술 독립적인 영역이며 외부영역과 연계되는 포트를 가짐
         - 외부영역 : 인터페이스 처리 담당
         - Inbound Adapter : 외부 요청 처리 (REST API 발행하는 컨트롤러, Spring MVC 컨트롤러, 이벤트 메시지 핸들러)
         - Outbound Adapter : 비즈니스 로직에 의해 호출되어 외부와 연계 (DAO, 이벤트 메시지 발행 클래스)
+        - 레이어드 아키텍처와 차이점 : 인터페이스를 이용해 의존관계를 관리한다.
+        - 참조 : https://dailyheumsi.tistory.com/249
         * 헥사고널 아키텍처 그림
      ![image](https://user-images.githubusercontent.com/66579939/126024705-9a1d3025-937a-4809-b706-4a1b3bfb8d71.png)
     1. 레이어드 아키텍처
