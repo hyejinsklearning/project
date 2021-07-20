@@ -108,6 +108,12 @@
             - 마이크로 서비스들의 정보를 레지스트리 서버에 등록할 수 있도록 기능을 제공한다.
             - Eureka 서버 : Eureka 클라이언트에 해당하는 마이크로 서비스들의 상태 정보가 등록되어 있는 레지스트리 서버
             - Eureka 클라이언트 : 서비스가 시작될 때 Eureka 서버에 자신의 정보를 등록하고 이후 주기적으로 자신의 health check 정보를 알리며, 일정 횟수 이상의 ping 이 확인되지 않으면 Eureka 서버에서 해당 서비스를 제외시킨다.
+         1. Istio
+            - 오픈소스로 공개되어 있는 Service Mesh 구현체
+            - kubernetes 환경에서 어플리케이션과 하나의 pod 로 묶여서 배포가 가능하여 sidecar 역할
+            - 마이크로서비스 앞단에서 트래픽을 가장 먼저 받는 Envoy Proxy 가 특징
+            - Circuit Breaker, Dynamic service discovery, load balancing TLS termination, Health Check, Staged rollouts 등 다양한 역할을 수행한다.
+            - traffic 에 관한 메트릭을 수집할 수 있어서 모니터링 툴과 활용 가능하다.
 1. BIZ Microservice 식별
     1. Bounded Context/Context Map
     2. 도메인 주도 설계 (DDD)
