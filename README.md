@@ -20,6 +20,7 @@
         - 프라이머리 어댑터 : 계층 사이 객체가 포트를 사용해 두 계층을 연결
         - 내부영역 : 비즈니스 로직 표현, 기술 독립적인 영역이며 외부영역과 연계되는 포트를 가짐
         - 외부영역 : 인터페이스 처리 담당
+        - 내부영역이 어댑터에 전혀 의존하지 않는다. (포트가 있기 때문에)
         - Inbound Adapter : 외부 요청 처리 (REST API 발행하는 컨트롤러, Spring MVC 컨트롤러, 이벤트 메시지 핸들러)
         - Outbound Adapter : 비즈니스 로직에 의해 호출되어 외부와 연계 (DAO, 이벤트 메시지 발행 클래스)
         - 레이어드 아키텍처와 차이점 : 인터페이스를 이용해 의존관계를 관리한다.
@@ -30,9 +31,9 @@
         - Spring 에서 일반적으로 사용되는 아키텍처
         - 도메인 Logic 에 집중
         ```
-        [Presentaion Layer] 컨트롤러
-        [Business Logic Layer] 서비스 - 도메인
-        [Data Access Layer] DAO
+        [Presentaion Layer] 화면 표현 및 전환 처리
+        [Business Logic Layer] 비즈니스 개념, 규칙, 흐름제어
+        [Data Access Layer] 데이터 처리
         ```
     1. Restful API 설계 원칙
         1. REST : Representational State Transfe라는 용어의 약자이다. 자원을 URI로 표시하고 해당 자원의 상태를 주고 받는 것을 의미한다.
@@ -305,6 +306,7 @@
         - Pod 상태를 체크하다가 비정상인 경우 Kubelet 을 통해서 재시작 
     1. Readiness Probes
         - 일시적으로 서비스가 불가능한 상태인 경우 서비스 목록에서 제외
+        - 문제 발생한 서비스로 로드밸런싱이 되지 않도록 함
     - Liveness probe와 Readiness probe 차이점은 
         - Liveness probe는 컨테이너의 상태가 비정상이라고 판단하면, 해당 Pod를 재시작하는데 반해,
         - Readiness probe는 컨테이너가 비정상일 경우에는 해당 Pod를 사용할 수 없음으로 표시하고, 서비스등에서 제외합니다.
